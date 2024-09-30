@@ -26,21 +26,40 @@ class WelcomeScreen extends StatelessWidget {
             ),
             Column(
               children: [
-                Container(
+                  Container(
                   padding: EdgeInsets.symmetric(vertical: 20, horizontal: 30),
                   decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 255, 255, 255).withOpacity(0.5),
+                    borderRadius: BorderRadius.circular(28),
+                    color: Color.fromARGB(255, 236, 234, 229).withOpacity(0.7),
                   ),
-                  child: Text(
-                    "La mejor manera de evitar un accidente es anticipándolo.",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: 20,
-                        color: const Color.fromARGB(255, 0, 0, 0),
-                        fontWeight: FontWeight.bold),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 3,
+                        child: Image.asset(
+                          'images/warning.jpg', 
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                      SizedBox(width: 20),
+
+                      Expanded(
+                        flex: 7,
+                        child: Text(
+                          "La mejor manera de evitar un accidente es anticipándolo.",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Color.fromARGB(255, 0, 0, 0),
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                SizedBox(height: 150),
+
+                SizedBox(height: 100),
                 Material(
                   color: Colors.transparent,
                   child: InkWell(
