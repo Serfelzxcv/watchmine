@@ -18,16 +18,16 @@ class bottomNavigationBar extends StatelessWidget {
           label: 'Pag 1',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.business),
-          label: 'Pag 2',
+          icon: Icon(Icons.add),
+          label: 'Menú',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.school),
           label: 'Pag 3',
         ),
       ],
-      currentIndex: selectedIndex, // Indica qué botón está seleccionado
-      onTap: onItemTapped, // Cambia la página cuando se presiona
+      currentIndex: selectedIndex, 
+      onTap: onItemTapped, 
     );
   }
 }

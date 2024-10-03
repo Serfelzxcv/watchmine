@@ -29,7 +29,7 @@ class WelcomeScreen extends StatelessWidget {
                   Container(
                   padding: EdgeInsets.symmetric(vertical: 20, horizontal: 30),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(28),
+                 
                     color: Color.fromARGB(255, 236, 234, 229).withOpacity(0.7),
                   ),
                   child: Row(
