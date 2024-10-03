@@ -26,10 +26,9 @@ class WelcomeScreen extends StatelessWidget {
             ),
             Column(
               children: [
-                  Container(
+                Container(
                   padding: EdgeInsets.symmetric(vertical: 20, horizontal: 30),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(28),
                     color: Color.fromARGB(255, 236, 234, 229).withOpacity(0.7),
                   ),
                   child: Row(
@@ -37,12 +36,11 @@ class WelcomeScreen extends StatelessWidget {
                       Expanded(
                         flex: 3,
                         child: Image.asset(
-                          'images/warning.jpg', 
+                          'images/warning.jpg',
                           fit: BoxFit.contain,
                         ),
                       ),
                       SizedBox(width: 20),
-
                       Expanded(
                         flex: 7,
                         child: Text(
@@ -58,7 +56,6 @@ class WelcomeScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-
                 SizedBox(height: 100),
                 Material(
                   color: Colors.transparent,
