@@ -1,41 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:minewatch/body/pag1.dart';
 import 'package:minewatch/body/pag2.dart';
-import 'package:minewatch/body/pag3.dart';
 import 'package:minewatch/components/bottomNavigationBar.dart';
+
 class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
+
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _selectedIndex = 0;
+  int currentPageIndex = 0;
 
-  // Lista de widgets para las diferentes páginas
-  final List<Widget> _pages = [
+  final List<Widget> pages = [
     Pag1(),
     Pag2(),
     Pag3(),
   ];
 
-  // Cambiar el índice cuando se presiona un botón en el BottomNavigationBar
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Navegación Inferior'),
+      bottomNavigationBar: BottomNavigationBarWidget(
+        currentPageIndex: currentPageIndex,
+        onDestinationSelected: (int index) {
+          setState(() {
+            currentPageIndex = index;
+          });
+        },
       ),
-      body: _pages[_selectedIndex], // Mostrar la página seleccionada
-      bottomNavigationBar: bottomNavigationBar(
-        selectedIndex: _selectedIndex,
-        onItemTapped: _onItemTapped, // Cambiar el índice
-      ),
+      body: pages[currentPageIndex],
     );
   }
 }
+
+Pag3() {}

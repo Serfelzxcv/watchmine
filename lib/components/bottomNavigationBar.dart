@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class bottomNavigationBar extends StatelessWidget {
-  final int selectedIndex;
+  int selectedIndex;
   final Function(int) onItemTapped;
 
   bottomNavigationBar({
@@ -11,23 +11,35 @@ class bottomNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BottomNavigationBar(
-      items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: 'Pag 1',
+    return Scaffold(
+        bottomNavigationBar: NavigationBar(
+      onDestinationSelected: (int index) {
+        setState(() {
+          selectedIndex = index;
+        });
+      },
+      indicatorColor: Colors.amber,
+      selectedIndex: selectedIndex,
+      destinations: const <Widget>[
+        NavigationDestination(
+          selectedIcon: Icon(Icons.home),
+          icon: Icon(Icons.home_outlined),
+          label: 'Home',
         ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.business),
-          label: 'Pag 2',
+        NavigationDestination(
+          icon: Badge(child: Icon(Icons.notifications_sharp)),
+          label: 'Notifications',
         ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.school),
-          label: 'Pag 3',
+        NavigationDestination(
+          icon: Badge(
+            label: Text('2'),
+            child: Icon(Icons.messenger_sharp),
+          ),
+          label: 'Messages',
         ),
       ],
-      currentIndex: selectedIndex, // Indica qué botón está seleccionado
-      onTap: onItemTapped, // Cambia la página cuando se presiona
-    );
+    ));
   }
+
+  void setState(Null Function() param0) {}
 }
