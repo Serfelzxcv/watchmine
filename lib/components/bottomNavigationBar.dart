@@ -1,45 +1,44 @@
 import 'package:flutter/material.dart';
 
-class bottomNavigationBar extends StatelessWidget {
-  int selectedIndex;
-  final Function(int) onItemTapped;
+class BottomNavigationBarWidget extends StatelessWidget {
+  final int currentPageIndex;
+  final Function(int) onDestinationSelected;
 
-  bottomNavigationBar({
-    required this.selectedIndex,
-    required this.onItemTapped,
-  });
+  const BottomNavigationBarWidget({
+    Key? key,
+    required this.currentPageIndex,
+    required this.onDestinationSelected,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        bottomNavigationBar: NavigationBar(
-      onDestinationSelected: (int index) {
-        setState(() {
-          selectedIndex = index;
-        });
-      },
-      indicatorColor: Colors.amber,
-      selectedIndex: selectedIndex,
+    return NavigationBar(
+      onDestinationSelected: onDestinationSelected,
+      selectedIndex: currentPageIndex,
+      indicatorColor: Colors.amber, // Indicador de color ámbar
+      backgroundColor: Colors.grey[200], // Color de fondo del NavigationBar
+      labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
       destinations: const <Widget>[
         NavigationDestination(
-          selectedIcon: Icon(Icons.home),
-          icon: Icon(Icons.home_outlined),
+          selectedIcon: Icon(Icons.home,
+              color: Colors.amber), // Icono seleccionado con color ámbar
+          icon: Icon(Icons.home_outlined,
+              color: Colors.black), // Icono no seleccionado
           label: 'Home',
         ),
         NavigationDestination(
-          icon: Badge(child: Icon(Icons.notifications_sharp)),
+          icon: Badge(
+              child: Icon(Icons.notifications_sharp, color: Colors.black)),
           label: 'Notifications',
         ),
         NavigationDestination(
           icon: Badge(
-            label: Text('2'),
-            child: Icon(Icons.messenger_sharp),
+            label: Text('2', style: TextStyle(color: Colors.white)),
+            child: Icon(Icons.messenger_sharp, color: Colors.black),
           ),
           label: 'Messages',
         ),
       ],
-    ));
+    );
   }
-
-  void setState(Null Function() param0) {}
 }

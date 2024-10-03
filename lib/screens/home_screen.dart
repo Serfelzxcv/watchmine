@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:minewatch/body/pag1.dart';
 import 'package:minewatch/body/pag2.dart';
+import 'package:minewatch/body/pag3.dart';
 import 'package:minewatch/components/bottomNavigationBar.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -34,5 +35,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
-Pag3() {}
