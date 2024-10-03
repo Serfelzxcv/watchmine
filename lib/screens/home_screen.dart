@@ -5,50 +5,33 @@ import 'package:minewatch/body/pag3.dart';
 import 'package:minewatch/components/bottomNavigationBar.dart';
 
 class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
+
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _selectedIndex = 0;
+  int currentPageIndex = 0;
 
-  // Lista de widgets para las diferentes páginas
-  final List<Widget> _pages = [
+  final List<Widget> pages = [
     Pag1(),
     Pag2(),
     Pag3(),
   ];
 
-  // Cambiar el índice cuando se presiona un botón en el BottomNavigationBar
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Navegación Inferior'),
-      ),
-      body: _pages[_selectedIndex], // Mostrar la página seleccionada
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Aquí defines la acción para el botón "Menú"
-          print('Botón de Menú presionado');
+      bottomNavigationBar: BottomNavigationBarWidget(
+        currentPageIndex: currentPageIndex,
+        onDestinationSelected: (int index) {
           setState(() {
-            _selectedIndex = 1; // Opcional: redirigir a Pag2 (Menú)
+            currentPageIndex = index;
           });
         },
-        child: Icon(Icons.menu),
-        tooltip: 'Menú',
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked, // Centrar el FAB
-      bottomNavigationBar: bottomNavigationBar(
-        selectedIndex: _selectedIndex,
-        onItemTapped: _onItemTapped, // Cambiar el índice
-      ),
+      body: pages[currentPageIndex],
     );
   }
 }

@@ -1,33 +1,44 @@
 import 'package:flutter/material.dart';
 
-class bottomNavigationBar extends StatelessWidget {
-  final int selectedIndex;
-  final Function(int) onItemTapped;
+class BottomNavigationBarWidget extends StatelessWidget {
+  final int currentPageIndex;
+  final Function(int) onDestinationSelected;
 
-  bottomNavigationBar({
-    required this.selectedIndex,
-    required this.onItemTapped,
-  });
+  const BottomNavigationBarWidget({
+    Key? key,
+    required this.currentPageIndex,
+    required this.onDestinationSelected,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return BottomNavigationBar(
-      items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: 'Pag 1',
+    return NavigationBar(
+      onDestinationSelected: onDestinationSelected,
+      selectedIndex: currentPageIndex,
+      indicatorColor: Colors.amber, // Indicador de color ámbar
+      backgroundColor: Colors.grey[200], // Color de fondo del NavigationBar
+      labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
+      destinations: const <Widget>[
+        NavigationDestination(
+          selectedIcon: Icon(Icons.home,
+              color: Colors.amber), // Icono seleccionado con color ámbar
+          icon: Icon(Icons.home_outlined,
+              color: Colors.black), // Icono no seleccionado
+          label: 'Home',
         ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.add),
-          label: 'Menú',
+        NavigationDestination(
+          icon: Badge(
+              child: Icon(Icons.notifications_sharp, color: Colors.black)),
+          label: 'Notifications',
         ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.school),
-          label: 'Pag 3',
+        NavigationDestination(
+          icon: Badge(
+            label: Text('2', style: TextStyle(color: Colors.white)),
+            child: Icon(Icons.messenger_sharp, color: Colors.black),
+          ),
+          label: 'Messages',
         ),
       ],
-      currentIndex: selectedIndex, 
-      onTap: onItemTapped, 
     );
   }
 }
