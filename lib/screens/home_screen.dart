@@ -24,6 +24,35 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Color(0xFF800020),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.contact_support),
+              color: Colors.white,
+              onPressed: () {
+                // Acción para contactar
+                print("Ir a Contáctanos");
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.settings),
+              color: Colors.white,
+              onPressed: () {
+                // Acción para la configuración
+                print("Ir a Configuración");
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.logout),
+              color: Colors.white,
+              onPressed: () {
+                // Acción para cerrar sesión
+                print("Cerrar sesión");
+              },
+            ),
+          ],
+        ),
         bottomNavigationBar: BottomNavigationBarWidget(
           currentPageIndex: currentPageIndex,
           onDestinationSelected: (int index) {

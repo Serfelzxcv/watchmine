@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:minewatch/components/ArcClipper.dart';
+import 'package:minewatch/screens/home_screen.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -137,8 +138,12 @@ class _LoginState extends State<Login> {
                             color: Colors.transparent,
                             child: InkWell(
                               onTap: () {
-                                // Aquí puedes manejar la acción de inicio de sesión
-                                // Cambiar la ruta de navegación o agregar lógica
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => HomeScreen(),
+                                  ),
+                                );
                               },
                               splashColor:
                                   const Color.fromARGB(255, 255, 255, 255)
