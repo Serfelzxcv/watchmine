@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class Pag3 extends StatelessWidget {
-  Pag3({Key? key}) : super(key: key);
+class Menu extends StatelessWidget {
+  Menu({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

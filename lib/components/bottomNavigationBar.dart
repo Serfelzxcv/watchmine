@@ -18,25 +18,20 @@ class BottomNavigationBarWidget extends StatelessWidget {
       indicatorColor: Colors.amber, // Indicador de color ámbar
       backgroundColor: Colors.grey[200], // Color de fondo del NavigationBar
       labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
-      destinations: const <Widget>[
+      destinations: <Widget>[
         NavigationDestination(
-          selectedIcon: Icon(Icons.home,
-              color: Colors.amber), // Icono seleccionado con color ámbar
-          icon: Icon(Icons.home_outlined,
-              color: Colors.black), // Icono no seleccionado
-          label: 'Home',
+          icon:
+              Icon(Icons.person, color: Colors.black), // Icono no seleccionado
+          label: 'Perfil',
+        ),
+        NavigationDestination(
+          icon: Icon(Icons.menu, color: Colors.black),
+          label: 'Menú',
         ),
         NavigationDestination(
           icon: Badge(
               child: Icon(Icons.notifications_sharp, color: Colors.black)),
           label: 'Notifications',
-        ),
-        NavigationDestination(
-          icon: Badge(
-            label: Text('2', style: TextStyle(color: Colors.white)),
-            child: Icon(Icons.messenger_sharp, color: Colors.black),
-          ),
-          label: 'Messages',
         ),
       ],
     );
