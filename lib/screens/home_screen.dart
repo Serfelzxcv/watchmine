@@ -2,7 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:minewatch/body/perfil.dart';
 import 'package:minewatch/body/notificaciones.dart';
 import 'package:minewatch/body/menu.dart';
+// Importa Flotas
 import 'package:minewatch/components/bottomNavigationBar.dart';
+import 'package:minewatch/menu_body/flotas.dart';
+
+enum ScreenType {
+  Perfil,
+  Menu,
+  Notificaciones,
+  Flotas,
+}
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -12,16 +21,36 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  ScreenType currentScreen = ScreenType.Perfil;
   int currentPageIndex = 0;
 
-  final List<Widget> pages = [
-    Perfil(),
-    Menu(),
-    Notificaciones(),
-  ];
+  void onMenuItemSelected(String item) {
+    setState(() {
+      if (item == 'Flotas') {
+        currentScreen = ScreenType.Flotas;
+      }
+      // Puedes manejar otros ítems aquí si lo deseas
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    Widget currentBodyWidget;
+    switch (currentScreen) {
+      case ScreenType.Perfil:
+        currentBodyWidget = PerfilUsuario();
+        break;
+      case ScreenType.Menu:
+        currentBodyWidget = Menu(onItemSelected: onMenuItemSelected);
+        break;
+      case ScreenType.Notificaciones:
+        currentBodyWidget = Notificaciones();
+        break;
+      case ScreenType.Flotas:
+        currentBodyWidget = Flotas();
+        break;
+    }
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -31,7 +60,6 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: Icon(Icons.contact_support),
               color: Colors.white,
               onPressed: () {
-                // Acción para contactar
                 print("Ir a Contáctanos");
               },
             ),
@@ -39,7 +67,6 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: Icon(Icons.settings),
               color: Colors.white,
               onPressed: () {
-                // Acción para la configuración
                 print("Ir a Configuración");
               },
             ),
@@ -47,7 +74,6 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: Icon(Icons.logout),
               color: Colors.white,
               onPressed: () {
-                // Acción para cerrar sesión
                 print("Cerrar sesión");
               },
             ),
@@ -58,10 +84,17 @@ class _HomeScreenState extends State<HomeScreen> {
           onDestinationSelected: (int index) {
             setState(() {
               currentPageIndex = index;
+              if (index == 0) {
+                currentScreen = ScreenType.Perfil;
+              } else if (index == 1) {
+                currentScreen = ScreenType.Menu;
+              } else if (index == 2) {
+                currentScreen = ScreenType.Notificaciones;
+              }
             });
           },
         ),
-        body: pages[currentPageIndex],
+        body: currentBodyWidget,
       ),
     );
   }

@@ -34,7 +34,7 @@ class WelcomeScreen extends StatelessWidget {
                 child: Image.asset(
                   'images/logoMineWatch.png',
                   fit: BoxFit.contain,
-                  color: const Color.fromARGB(255, 255, 255, 255),
+                  color: const Color.fromARGB(255, 255, 184, 4),
                 ),
               ),
 
@@ -45,7 +45,7 @@ class WelcomeScreen extends StatelessWidget {
                     "Analytica",
                     style: GoogleFonts.lato(
                       fontSize: 50,
-                      color: const Color.fromARGB(255, 255, 184, 4),
+                      color: const Color.fromARGB(255, 255, 255, 255),
                     ),
                   ),
                   Center(

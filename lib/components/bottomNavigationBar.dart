@@ -20,8 +20,7 @@ class BottomNavigationBarWidget extends StatelessWidget {
       labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
       destinations: <Widget>[
         NavigationDestination(
-          icon:
-              Icon(Icons.person, color: Colors.black), // Icono no seleccionado
+          icon: Icon(Icons.person, color: Colors.black),
           label: 'Perfil',
         ),
         NavigationDestination(
@@ -30,8 +29,41 @@ class BottomNavigationBarWidget extends StatelessWidget {
         ),
         NavigationDestination(
           icon: Badge(
-              child: Icon(Icons.notifications_sharp, color: Colors.black)),
-          label: 'Notifications',
+            child: Icon(Icons.notifications_sharp, color: Colors.black),
+          ),
+          label: 'Notificaciones',
+        ),
+      ],
+    );
+  }
+}
+
+// Implementación básica de Badge si no lo tienes
+class Badge extends StatelessWidget {
+  final Widget child;
+
+  const Badge({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        child,
+        Positioned(
+          right: 0,
+          child: Container(
+            padding: EdgeInsets.all(1),
+            decoration: BoxDecoration(
+              color: Colors.red,
+              borderRadius: BorderRadius.circular(6),
+            ),
+            constraints: BoxConstraints(minWidth: 12, minHeight: 12),
+            child: Text(
+              '1', // Puedes hacerlo dinámico si lo deseas
+              style: TextStyle(color: Colors.white, fontSize: 8),
+              textAlign: TextAlign.center,
+            ),
+          ),
         ),
       ],
     );

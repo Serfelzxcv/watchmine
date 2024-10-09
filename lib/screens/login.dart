@@ -44,6 +44,7 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Color.fromARGB(255, 36, 36, 36),
         body: SingleChildScrollView(
           // Aquí se permite que el contenido sea desplazable
           child: Column(
@@ -68,7 +69,7 @@ class _LoginState extends State<Login> {
                     // Texto "Analytica"
                     Text(
                       "Analytica",
-                      style: GoogleFonts.aDLaMDisplay(
+                      style: GoogleFonts.lato(
                         fontSize: 50,
                         color: const Color.fromARGB(255, 255, 255, 255),
                       ),
@@ -80,7 +81,7 @@ class _LoginState extends State<Login> {
                       child: Text(
                         "Empresa Minera dedicada a la exploración, explotación y beneficios de minerales.",
                         textAlign: TextAlign.center,
-                        style: GoogleFonts.aDLaMDisplay(
+                        style: GoogleFonts.lato(
                           fontSize: 18,
                           color: const Color.fromARGB(255, 255, 255, 255),
                         ),
