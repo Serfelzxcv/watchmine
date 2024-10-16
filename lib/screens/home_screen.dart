@@ -5,6 +5,7 @@ import 'package:minewatch/body/menu.dart';
 // Importa Flotas
 import 'package:minewatch/components/bottomNavigationBar.dart';
 import 'package:minewatch/menu_body/flotas.dart';
+import 'package:minewatch/screens/login.dart'; // Importa la pantalla de Login
 
 enum ScreenType {
   Perfil,
@@ -14,7 +15,10 @@ enum ScreenType {
 }
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  final Map<String, dynamic> userData; // Añadimos esta línea
+
+  const HomeScreen({Key? key, required this.userData})
+      : super(key: key); // Aceptamos userData en el constructor
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -29,7 +33,6 @@ class _HomeScreenState extends State<HomeScreen> {
       if (item == 'Flotas') {
         currentScreen = ScreenType.Flotas;
       }
-      // Puedes manejar otros ítems aquí si lo deseas
     });
   }
 
@@ -38,7 +41,8 @@ class _HomeScreenState extends State<HomeScreen> {
     Widget currentBodyWidget;
     switch (currentScreen) {
       case ScreenType.Perfil:
-        currentBodyWidget = PerfilUsuario();
+        currentBodyWidget =
+            PerfilUsuario(widget.userData); // Pasamos los datos del usuario
         break;
       case ScreenType.Menu:
         currentBodyWidget = Menu(onItemSelected: onMenuItemSelected);
@@ -74,7 +78,14 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: Icon(Icons.logout),
               color: Colors.white,
               onPressed: () {
-                print("Cerrar sesión");
+                // Al hacer clic en el botón de logout, se navega de regreso a la pantalla de Login
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => Login()), // Navegar al login
+                  (Route<dynamic> route) =>
+                      false, // Remover todas las rutas previas
+                );
               },
             ),
           ],

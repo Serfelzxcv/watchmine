@@ -51,3 +51,10 @@ macos/Flutter/
 
 # Ignorar archivos generados por Flutter en Windows
 windows/flutter/
+
+# otros
+/vendor/
+/composer.lock
+
+
+#composer install    -> Para instalar dependencias
