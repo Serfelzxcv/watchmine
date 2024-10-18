@@ -51,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
         currentBodyWidget = Notificaciones();
         break;
       case ScreenType.Flotas:
-        currentBodyWidget = Flotas();
+        currentBodyWidget = VehicleSearch();
         break;
     }
 
