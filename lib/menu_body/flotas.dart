@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:minewatch/body/VehicleDetail.dart';
 import 'package:minewatch/services/vehicle_service.dart';
 
 class VehicleSearch extends StatefulWidget {
@@ -9,11 +9,17 @@ class VehicleSearch extends StatefulWidget {
 
 class _VehicleSearchState extends State<VehicleSearch> {
   TextEditingController _controller = TextEditingController();
-  Map<String, dynamic>? _vehicle; // Vehículo encontrado
-  bool _notFound = false;
   VehicleService _vehicleService = VehicleService();
+  Map<String, dynamic>? _vehicle;
+  bool _notFound = false;
+  bool _loading = false;
 
+  // Función para buscar el vehículo por la placa
   Future<void> _searchVehicle() async {
+    setState(() {
+      _loading = true;
+    });
+
     try {
       List<dynamic> vehicles = await _vehicleService.fetchVehicles();
       String plate = _controller.text.toUpperCase();
@@ -22,9 +28,14 @@ class _VehicleSearchState extends State<VehicleSearch> {
         _vehicle = vehicles.firstWhere((vehicle) => vehicle['placa'] == plate,
             orElse: () => null);
         _notFound = _vehicle == null;
+        _loading = false;
       });
     } catch (e) {
-      throw Exception('Error al buscar el vehículo');
+      setState(() {
+        _loading = false;
+        _notFound = true;
+      });
+      print('Error al buscar vehículo: $e');
     }
   }
 
@@ -37,11 +48,11 @@ class _VehicleSearchState extends State<VehicleSearch> {
           padding: const EdgeInsets.all(30.0),
           child: Column(
             children: [
-              _buildHeader(),
+              _buildHeader(), // Aquí se integra el header con el logo
               SizedBox(height: 30),
               _buildSearchInput(),
               SizedBox(height: 30),
-              _buildResults(),
+              _loading ? CircularProgressIndicator() : _buildResults(),
             ],
           ),
         ),
@@ -90,7 +101,7 @@ class _VehicleSearchState extends State<VehicleSearch> {
             controller: _controller,
             textAlign: TextAlign.center,
             textAlignVertical: TextAlignVertical.center,
-            style: GoogleFonts.bungee(
+            style: TextStyle(
               fontSize: 25,
               color: const Color.fromARGB(255, 255, 255, 255),
             ),
@@ -125,22 +136,41 @@ class _VehicleSearchState extends State<VehicleSearch> {
   }
 
   Widget _buildVehicleCard() {
-    return Card(
-      color: Colors.grey[800],
-      child: ListTile(
-        leading: Icon(Icons.directions_car, color: Colors.yellow),
-        title: Text(
-          _vehicle!['placa'],
-          style: TextStyle(
-              color: Colors.yellow, fontSize: 24, fontWeight: FontWeight.bold),
+    return GestureDetector(
+      onTap: () {
+        // Navegar a la pantalla de detalles del vehículo
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => VehicleDetail(vehicle: _vehicle!),
+          ),
+        );
+      },
+      child: Card(
+        color: Colors.grey[800],
+        child: ListTile(
+          leading: Image.network(_vehicle!['imagen']),
+          title: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                _vehicle!['placa'],
+                style: TextStyle(
+                    color: Colors.yellow,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 5), // Espacio entre título y subtítulo
+              Text(
+                'Marca: ${_vehicle!['marca']}',
+                style: TextStyle(
+                  color: Colors.grey,
+                ),
+              ),
+            ],
+          ),
         ),
-        subtitle: Text(
-          'Oprima para ver más información',
-          style: TextStyle(color: Colors.grey),
-        ),
-        onTap: () {
-          // Implementa la acción al hacer clic
-        },
       ),
     );
   }
