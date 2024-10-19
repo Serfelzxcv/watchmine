@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:minewatch/body/perfil.dart';
 import 'package:minewatch/body/notificaciones.dart';
 import 'package:minewatch/body/menu.dart';
-// Importa Flotas
 import 'package:minewatch/components/bottomNavigationBar.dart';
-import 'package:minewatch/menu_body/flotas.dart';
-import 'package:minewatch/screens/login.dart'; // Importa la pantalla de Login
+import 'package:minewatch/menu_body/vehicleSearch.dart';
+import 'package:minewatch/screens/login.dart'; // Asegúrate de importar VehicleDetail
 
 enum ScreenType {
   Perfil,
@@ -15,44 +14,36 @@ enum ScreenType {
 }
 
 class HomeScreen extends StatefulWidget {
-  final Map<String, dynamic> userData; // Añadimos esta línea
+  final Map<String, dynamic> userData;
 
-  const HomeScreen({Key? key, required this.userData})
-      : super(key: key); // Aceptamos userData en el constructor
+  const HomeScreen({Key? key, required this.userData}) : super(key: key);
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<HomeScreen> createState() => HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class HomeScreenState extends State<HomeScreen> {
   ScreenType currentScreen = ScreenType.Perfil;
   int currentPageIndex = 0;
-
-  void onMenuItemSelected(String item) {
-    setState(() {
-      if (item == 'Flotas') {
-        currentScreen = ScreenType.Flotas;
-      }
-    });
-  }
+  Widget? currentBodyWidget;
 
   @override
   Widget build(BuildContext context) {
-    Widget currentBodyWidget;
-    switch (currentScreen) {
-      case ScreenType.Perfil:
-        currentBodyWidget =
-            PerfilUsuario(widget.userData); // Pasamos los datos del usuario
-        break;
-      case ScreenType.Menu:
-        currentBodyWidget = Menu(onItemSelected: onMenuItemSelected);
-        break;
-      case ScreenType.Notificaciones:
-        currentBodyWidget = Notificaciones();
-        break;
-      case ScreenType.Flotas:
-        currentBodyWidget = VehicleSearch();
-        break;
+    if (currentBodyWidget == null) {
+      switch (currentScreen) {
+        case ScreenType.Perfil:
+          currentBodyWidget = PerfilUsuario(widget.userData);
+          break;
+        case ScreenType.Menu:
+          currentBodyWidget = Menu(onItemSelected: onMenuItemSelected);
+          break;
+        case ScreenType.Notificaciones:
+          currentBodyWidget = Notificaciones();
+          break;
+        case ScreenType.Flotas:
+          currentBodyWidget = VehicleSearch();
+          break;
+      }
     }
 
     return SafeArea(
@@ -78,13 +69,10 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: Icon(Icons.logout),
               color: Colors.white,
               onPressed: () {
-                // Al hacer clic en el botón de logout, se navega de regreso a la pantalla de Login
                 Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => Login()), // Navegar al login
-                  (Route<dynamic> route) =>
-                      false, // Remover todas las rutas previas
+                  MaterialPageRoute(builder: (context) => Login()),
+                  (Route<dynamic> route) => false,
                 );
               },
             ),
@@ -97,16 +85,28 @@ class _HomeScreenState extends State<HomeScreen> {
               currentPageIndex = index;
               if (index == 0) {
                 currentScreen = ScreenType.Perfil;
+                currentBodyWidget = PerfilUsuario(widget.userData);
               } else if (index == 1) {
                 currentScreen = ScreenType.Menu;
+                currentBodyWidget = Menu(onItemSelected: onMenuItemSelected);
               } else if (index == 2) {
                 currentScreen = ScreenType.Notificaciones;
+                currentBodyWidget = Notificaciones();
               }
             });
           },
         ),
-        body: currentBodyWidget,
+        body: currentBodyWidget!,
       ),
     );
+  }
+
+  void onMenuItemSelected(String item) {
+    setState(() {
+      if (item == 'Flotas') {
+        currentScreen = ScreenType.Flotas;
+        currentBodyWidget = VehicleSearch();
+      }
+    });
   }
 }

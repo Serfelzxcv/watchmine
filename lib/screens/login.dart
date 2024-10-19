@@ -115,7 +115,7 @@ class _LoginState extends State<Login> {
                       child: Image.asset(
                         'images/logoMineWatch.png',
                         fit: BoxFit.contain,
-                        color: const Color.fromARGB(255, 255, 184, 4),
+                        color: Color.fromARGB(255, 36, 36, 36),
                       ),
                     ),
                     SizedBox(height: 20),

@@ -1,56 +1,78 @@
 import 'package:flutter/material.dart';
 
-class VehicleDetail extends StatelessWidget {
+class VehicleDetail extends StatefulWidget {
   final Map<String, dynamic> vehicle;
 
   VehicleDetail({required this.vehicle});
 
   @override
+  _VehicleDetailState createState() => _VehicleDetailState();
+}
+
+class _VehicleDetailState extends State<VehicleDetail> {
+  bool isMaintenanceSelected = true;
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Detalles del Vehículo'),
-        backgroundColor: Colors.black,
-      ),
-      backgroundColor: Color.fromARGB(255, 36, 36, 36),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _buildHeader(),
-            SizedBox(height: 20),
-            _buildDetailIcons(),
-            SizedBox(height: 20),
-            _buildTabs(),
-          ],
-        ),
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _buildHeader(),
+          SizedBox(height: 20),
+          _buildDetailIcons(),
+          SizedBox(height: 20),
+          _buildTabs(),
+          SizedBox(height: 20),
+          _buildContent(),
+        ],
       ),
     );
   }
 
   Widget _buildHeader() {
-    // Safely handle possible null values with default values
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Image.network(
-          vehicle['imagen'] ??
-              'https://via.placeholder.com/150', // Default image if null
-          height: 150,
-          fit: BoxFit.cover,
-        ),
-        SizedBox(height: 16),
-        Text(
-          vehicle['placa'] ?? 'Placa desconocida', // Default if 'placa' is null
-          style: TextStyle(
-              color: Colors.yellow, fontSize: 24, fontWeight: FontWeight.bold),
-        ),
-        Text(
-          '${vehicle['marca'] ?? 'Marca desconocida'} / ${vehicle['año_fabricación'] ?? 'Año desconocido'}', // Default for 'marca' and 'año_fabricación'
-          style: TextStyle(color: Colors.white, fontSize: 16),
-        ),
-      ],
+    return Container(
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Image.network(
+            widget.vehicle['imagen'] ?? 'https://via.placeholder.com/150',
+            height: 150,
+            width: 150,
+            fit: BoxFit.cover,
+          ),
+          SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  widget.vehicle['placa'] ?? 'Placa desconocida',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  '${widget.vehicle['marca'] ?? 'Marca desconocida'} / ${widget.vehicle['año_fabricación']?.toString() ?? 'Año desconocido'}',
+                  style: TextStyle(
+                    color: Colors.grey[800],
+                    fontSize: 16,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -59,11 +81,11 @@ class VehicleDetail extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         _buildIconInfo(Icons.local_gas_station,
-            vehicle['tipo_combustible'] ?? 'Desconocido', 'Combustible'),
+            widget.vehicle['tipo_combustible'] ?? 'Desconocido', 'Combustible'),
         _buildIconInfo(Icons.car_repair,
-            vehicle['categoría_vehículo'] ?? 'Desconocido', 'Categoría'),
+            widget.vehicle['categoría_vehículo'] ?? 'Desconocido', 'Categoría'),
         _buildIconInfo(Icons.color_lens,
-            vehicle['color_vehículo'] ?? 'Desconocido', 'Color'),
+            widget.vehicle['color_vehículo'] ?? 'Desconocido', 'Color'),
       ],
     );
   }
@@ -84,21 +106,75 @@ class VehicleDetail extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        ElevatedButton(
-          onPressed: () {
-            // Acción de mantenimiento
-          },
-          child: Text('Mantenimientos'),
-          style: ElevatedButton.styleFrom(backgroundColor: Colors.grey[800]),
-        ),
+        _buildTabButton('Mantenimientos', isMaintenanceSelected),
         SizedBox(width: 10),
-        ElevatedButton(
-          onPressed: () {
-            // Acción de estadísticas
-          },
-          child: Text('Estadísticas'),
-          style: ElevatedButton.styleFrom(backgroundColor: Colors.yellow),
+        _buildTabButton('Estadísticas', !isMaintenanceSelected),
+      ],
+    );
+  }
+
+  Widget _buildTabButton(String text, bool isSelected) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          isMaintenanceSelected = text == 'Mantenimientos';
+        });
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.yellow : Colors.grey[800],
+          borderRadius: BorderRadius.circular(20),
         ),
+        child: Text(
+          text,
+          style: TextStyle(
+            color: isSelected ? Colors.black : Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildContent() {
+    return isMaintenanceSelected
+        ? _buildMaintenanceDetails()
+        : _buildStatisticsDetails();
+  }
+
+  Widget _buildMaintenanceDetails() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Mantenimientos recientes',
+          style: TextStyle(color: Colors.yellow, fontSize: 18),
+        ),
+        SizedBox(height: 10),
+        Text(
+          'Aquí van los detalles de mantenimientos...',
+          style: TextStyle(color: Colors.white),
+        ),
+        SizedBox(height: 10),
+      ],
+    );
+  }
+
+  Widget _buildStatisticsDetails() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Estadísticas del vehículo',
+          style: TextStyle(color: Colors.yellow, fontSize: 18),
+        ),
+        SizedBox(height: 10),
+        Text(
+          'Aquí van las estadísticas...',
+          style: TextStyle(color: Colors.white),
+        ),
+        SizedBox(height: 10),
       ],
     );
   }

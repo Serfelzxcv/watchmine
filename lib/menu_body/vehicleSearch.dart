@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:minewatch/body/VehicleDetail.dart';
+import 'package:minewatch/screens/home_screen.dart';
 import 'package:minewatch/services/vehicle_service.dart';
 
 class VehicleSearch extends StatefulWidget {
@@ -14,7 +15,6 @@ class _VehicleSearchState extends State<VehicleSearch> {
   bool _notFound = false;
   bool _loading = false;
 
-  // Función para buscar el vehículo por la placa
   Future<void> _searchVehicle() async {
     setState(() {
       _loading = true;
@@ -41,21 +41,16 @@ class _VehicleSearchState extends State<VehicleSearch> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color.fromARGB(255, 36, 36, 36),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(30.0),
-          child: Column(
-            children: [
-              _buildHeader(), // Aquí se integra el header con el logo
-              SizedBox(height: 30),
-              _buildSearchInput(),
-              SizedBox(height: 30),
-              _loading ? CircularProgressIndicator() : _buildResults(),
-            ],
-          ),
-        ),
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(30.0),
+      child: Column(
+        children: [
+          _buildHeader(),
+          SizedBox(height: 30),
+          _buildSearchInput(),
+          SizedBox(height: 30),
+          _loading ? CircularProgressIndicator() : _buildResults(),
+        ],
       ),
     );
   }
@@ -100,7 +95,6 @@ class _VehicleSearchState extends State<VehicleSearch> {
           TextField(
             controller: _controller,
             textAlign: TextAlign.center,
-            textAlignVertical: TextAlignVertical.center,
             style: TextStyle(
               fontSize: 25,
               color: const Color.fromARGB(255, 255, 255, 255),
@@ -138,13 +132,13 @@ class _VehicleSearchState extends State<VehicleSearch> {
   Widget _buildVehicleCard() {
     return GestureDetector(
       onTap: () {
-        // Navegar a la pantalla de detalles del vehículo
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => VehicleDetail(vehicle: _vehicle!),
-          ),
-        );
+        (context as Element)
+            .findAncestorStateOfType<HomeScreenState>()
+            ?.setState(() {
+          (context as Element)
+              .findAncestorStateOfType<HomeScreenState>()
+              ?.currentBodyWidget = VehicleDetail(vehicle: _vehicle!);
+        });
       },
       child: Card(
         color: Colors.grey[800],
@@ -161,7 +155,7 @@ class _VehicleSearchState extends State<VehicleSearch> {
                     fontSize: 24,
                     fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 5), // Espacio entre título y subtítulo
+              SizedBox(height: 5),
               Text(
                 'Marca: ${_vehicle!['marca']}',
                 style: TextStyle(
