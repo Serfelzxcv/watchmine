@@ -4,13 +4,16 @@ import 'package:minewatch/body/notificaciones.dart';
 import 'package:minewatch/body/menu.dart';
 import 'package:minewatch/components/bottomNavigationBar.dart';
 import 'package:minewatch/menu_body/vehicleSearch.dart';
-import 'package:minewatch/screens/login.dart'; // Asegúrate de importar VehicleDetail
+import 'package:minewatch/screens/login.dart';
+import 'package:minewatch/body/VehicleDetail.dart'; // Asegúrate de importar VehicleDetail
 
+// Enum para gestionar las diferentes pantallas
 enum ScreenType {
   Perfil,
   Menu,
   Notificaciones,
   Flotas,
+  Detalles, // Nueva pantalla para detalles del vehículo
 }
 
 class HomeScreen extends StatefulWidget {
@@ -19,33 +22,23 @@ class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key, required this.userData}) : super(key: key);
 
   @override
-  State<HomeScreen> createState() => HomeScreenState();
+  State<HomeScreen> createState() => HomeScreenState(); // Clase State pública
 }
 
 class HomeScreenState extends State<HomeScreen> {
   ScreenType currentScreen = ScreenType.Perfil;
   int currentPageIndex = 0;
-  Widget? currentBodyWidget;
+  Widget currentBodyWidget = Container(); // Inicialización vacía
+
+  @override
+  void initState() {
+    super.initState();
+    currentBodyWidget =
+        PerfilUsuario(widget.userData); // Inicializar con PerfilUsuario
+  }
 
   @override
   Widget build(BuildContext context) {
-    if (currentBodyWidget == null) {
-      switch (currentScreen) {
-        case ScreenType.Perfil:
-          currentBodyWidget = PerfilUsuario(widget.userData);
-          break;
-        case ScreenType.Menu:
-          currentBodyWidget = Menu(onItemSelected: onMenuItemSelected);
-          break;
-        case ScreenType.Notificaciones:
-          currentBodyWidget = Notificaciones();
-          break;
-        case ScreenType.Flotas:
-          currentBodyWidget = VehicleSearch();
-          break;
-      }
-    }
-
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -96,17 +89,26 @@ class HomeScreenState extends State<HomeScreen> {
             });
           },
         ),
-        body: currentBodyWidget!,
+        body: currentBodyWidget,
       ),
     );
   }
 
+  // Manejar selección de ítems en el menú
   void onMenuItemSelected(String item) {
     setState(() {
       if (item == 'Flotas') {
         currentScreen = ScreenType.Flotas;
-        currentBodyWidget = VehicleSearch();
+        currentBodyWidget = VehicleSearch(onVehicleSelected: onVehicleSelected);
       }
+    });
+  }
+
+  // Callback para manejar la selección de un vehículo
+  void onVehicleSelected(Map<String, dynamic> vehicle) {
+    setState(() {
+      currentScreen = ScreenType.Detalles;
+      currentBodyWidget = VehicleDetail(vehicle: vehicle);
     });
   }
 }

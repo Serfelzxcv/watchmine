@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:minewatch/body/VehicleDetail.dart';
-import 'package:minewatch/screens/home_screen.dart';
 import 'package:minewatch/services/vehicle_service.dart';
 
 class VehicleSearch extends StatefulWidget {
+  final void Function(Map<String, dynamic>) onVehicleSelected;
+
+  // Constructor actualizado para aceptar el callback
+  VehicleSearch({required this.onVehicleSelected});
+
   @override
   _VehicleSearchState createState() => _VehicleSearchState();
 }
@@ -15,9 +18,11 @@ class _VehicleSearchState extends State<VehicleSearch> {
   bool _notFound = false;
   bool _loading = false;
 
+  // Función para buscar el vehículo por placa
   Future<void> _searchVehicle() async {
     setState(() {
       _loading = true;
+      _notFound = false;
     });
 
     try {
@@ -25,8 +30,10 @@ class _VehicleSearchState extends State<VehicleSearch> {
       String plate = _controller.text.toUpperCase();
 
       setState(() {
-        _vehicle = vehicles.firstWhere((vehicle) => vehicle['placa'] == plate,
-            orElse: () => null);
+        _vehicle = vehicles.firstWhere(
+          (vehicle) => vehicle['placa'] == plate,
+          orElse: () => null,
+        );
         _notFound = _vehicle == null;
         _loading = false;
       });
@@ -41,20 +48,24 @@ class _VehicleSearchState extends State<VehicleSearch> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(30.0),
-      child: Column(
-        children: [
-          _buildHeader(),
-          SizedBox(height: 30),
-          _buildSearchInput(),
-          SizedBox(height: 30),
-          _loading ? CircularProgressIndicator() : _buildResults(),
-        ],
+    return Container(
+      color: Color.fromARGB(255, 36, 36, 36), // Fondo oscuro
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(30.0),
+        child: Column(
+          children: [
+            _buildHeader(),
+            SizedBox(height: 30),
+            _buildSearchInput(),
+            SizedBox(height: 30),
+            _loading ? CircularProgressIndicator() : _buildResults(),
+          ],
+        ),
       ),
     );
   }
 
+  // Construcción del encabezado con el logo
   Widget _buildHeader() {
     return Column(
       children: [
@@ -79,6 +90,7 @@ class _VehicleSearchState extends State<VehicleSearch> {
     );
   }
 
+  // Construcción del campo de búsqueda
   Widget _buildSearchInput() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 24.0),
@@ -119,6 +131,7 @@ class _VehicleSearchState extends State<VehicleSearch> {
     );
   }
 
+  // Construcción de los resultados de la búsqueda
   Widget _buildResults() {
     if (_vehicle != null) {
       return _buildVehicleCard();
@@ -129,37 +142,38 @@ class _VehicleSearchState extends State<VehicleSearch> {
     }
   }
 
+  // Construcción de la tarjeta del vehículo encontrado
   Widget _buildVehicleCard() {
     return GestureDetector(
       onTap: () {
-        (context as Element)
-            .findAncestorStateOfType<HomeScreenState>()
-            ?.setState(() {
-          (context as Element)
-              .findAncestorStateOfType<HomeScreenState>()
-              ?.currentBodyWidget = VehicleDetail(vehicle: _vehicle!);
-        });
+        // Invocar el callback pasando el vehículo seleccionado
+        widget.onVehicleSelected(_vehicle!);
       },
       child: Card(
         color: Colors.grey[800],
-        child: ListTile(
-          leading: Image.network(_vehicle!['imagen']),
-          title: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
             children: [
-              Text(
-                _vehicle!['placa'],
-                style: TextStyle(
-                    color: Colors.yellow,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold),
+              // Imagen agrandada del vehículo
+              Image.network(
+                _vehicle!['imagen'],
+                width: 100, // Tamaño aumentado para una imagen más grande
+                height: 80,
+                fit: BoxFit.cover,
               ),
-              SizedBox(height: 5),
-              Text(
-                'Marca: ${_vehicle!['marca']}',
-                style: TextStyle(
-                  color: Colors.grey,
+              SizedBox(width: 16), // Espacio entre la imagen y la placa
+              // Placa centrada
+              Expanded(
+                child: Center(
+                  child: Text(
+                    _vehicle!['placa'],
+                    style: TextStyle(
+                      color: Colors.yellow,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -169,6 +183,7 @@ class _VehicleSearchState extends State<VehicleSearch> {
     );
   }
 
+  // Mensaje cuando no se encuentra el vehículo
   Widget _buildNotFound() {
     return Column(
       children: [
@@ -182,6 +197,7 @@ class _VehicleSearchState extends State<VehicleSearch> {
     );
   }
 
+  // Estado vacío antes de realizar una búsqueda
   Widget _buildEmptyState() {
     return Column(
       children: [

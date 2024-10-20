@@ -13,29 +13,54 @@ class _VehicleDetailState extends State<VehicleDetail> {
   bool isMaintenanceSelected = true;
 
   @override
+  void initState() {
+    super.initState();
+    // Imprimir todos los datos del vehículo para verificar
+    print('Datos del Vehículo:');
+    widget.vehicle.forEach((key, value) {
+      print('$key: $value');
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          _buildHeader(),
-          SizedBox(height: 20),
-          _buildDetailIcons(),
-          SizedBox(height: 20),
-          _buildTabs(),
-          SizedBox(height: 20),
-          _buildContent(),
-        ],
+    return Container(
+      color: Color.fromARGB(255, 36, 36, 36), // Fondo oscuro
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _buildHeader(),
+            SizedBox(height: 50),
+            _buildDetailIcons(),
+            SizedBox(height: 50),
+            _buildTabs(),
+            SizedBox(height: 50),
+            _buildContent(),
+          ],
+        ),
       ),
     );
   }
 
+  // Construcción del encabezado con fondo blanco
   Widget _buildHeader() {
+    final placa = widget.vehicle['placa'] ?? 'Placa desconocida';
+    final marca = widget.vehicle['marca'] ?? 'Marca desconocida';
+    final anio =
+        widget.vehicle['anio_fabricacion']?.toString() ?? 'Año desconocido';
+    final numeroMotor =
+        widget.vehicle['numero_motor'] ?? 'Número de motor desconocido';
+
+    // Imprimir datos específicos del encabezado
+    print(
+        'Encabezado: placa=$placa, marca=$marca, anio_fabricacion=$anio, numero_motor=$numeroMotor');
+
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.white, // Fondo blanco para el encabezado
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
@@ -43,8 +68,8 @@ class _VehicleDetailState extends State<VehicleDetail> {
         children: [
           Image.network(
             widget.vehicle['imagen'] ?? 'https://via.placeholder.com/150',
-            height: 150,
-            width: 150,
+            height: 100,
+            width: 100,
             fit: BoxFit.cover,
           ),
           SizedBox(width: 16),
@@ -52,22 +77,23 @@ class _VehicleDetailState extends State<VehicleDetail> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  widget.vehicle['placa'] ?? 'Placa desconocida',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
+                Center(
+                  child: Text(
+                    placa,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
                 ),
                 SizedBox(height: 8),
-                Text(
-                  '${widget.vehicle['marca'] ?? 'Marca desconocida'} / ${widget.vehicle['año_fabricación']?.toString() ?? 'Año desconocido'}',
-                  style: TextStyle(
-                    color: Colors.grey[800],
-                    fontSize: 16,
-                  ),
-                ),
+                _buildRichText('Marca: ', marca),
+                SizedBox(height: 4),
+                _buildRichText('Año de Fabricación: ', anio),
+                SizedBox(height: 4),
+                _buildRichText('Número de Motor: ', numeroMotor),
               ],
             ),
           ),
@@ -76,32 +102,71 @@ class _VehicleDetailState extends State<VehicleDetail> {
     );
   }
 
+  // Función para construir el texto con el título en negrita y el valor normal
+  Widget _buildRichText(String title, String value) {
+    return RichText(
+      text: TextSpan(
+        children: [
+          TextSpan(
+            text: title,
+            style: TextStyle(
+              color: Colors.grey[800],
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          TextSpan(
+            text: value,
+            style: TextStyle(
+              color: Colors.grey[800],
+              fontSize: 16,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Construcción de los íconos de detalle
   Widget _buildDetailIcons() {
+    final tipoCombustible = widget.vehicle['tipo_combustible'] ?? 'Desconocido';
+    final categoria = widget.vehicle['categoria_vehiculo'] ?? 'Desconocido';
+    final colorVehiculo = widget.vehicle['color_vehiculo'] ?? 'Desconocido';
+
+    // Imprimir datos de los íconos de detalle
+    print(
+        'Íconos de Detalle: tipo_combustible=$tipoCombustible, categoria_vehiculo=$categoria, color_vehiculo=$colorVehiculo');
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        _buildIconInfo(Icons.local_gas_station,
-            widget.vehicle['tipo_combustible'] ?? 'Desconocido', 'Combustible'),
-        _buildIconInfo(Icons.car_repair,
-            widget.vehicle['categoría_vehículo'] ?? 'Desconocido', 'Categoría'),
-        _buildIconInfo(Icons.color_lens,
-            widget.vehicle['color_vehículo'] ?? 'Desconocido', 'Color'),
+        _buildIconInfo(Icons.local_gas_station, tipoCombustible, 'Combustible'),
+        _buildIconInfo(Icons.category, categoria, 'Categoría'),
+        _buildIconInfo(Icons.color_lens, colorVehiculo, 'Color'),
       ],
     );
   }
 
+  // Construcción de cada ícono de detalle
   Widget _buildIconInfo(IconData icon, String info, String label) {
     return Column(
       children: [
         Icon(icon, color: Colors.yellow, size: 40),
         SizedBox(height: 8),
-        Text(info, style: TextStyle(color: Colors.white, fontSize: 16)),
+        Text(
+          info,
+          style: TextStyle(color: Colors.white, fontSize: 16),
+        ),
         SizedBox(height: 4),
-        Text(label, style: TextStyle(color: Colors.grey, fontSize: 12)),
+        Text(
+          label,
+          style: TextStyle(color: Colors.grey, fontSize: 12),
+        ),
       ],
     );
   }
 
+  // Construcción de las pestañas de Mantenimientos y Estadísticas
   Widget _buildTabs() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -113,6 +178,7 @@ class _VehicleDetailState extends State<VehicleDetail> {
     );
   }
 
+  // Construcción de cada botón de pestaña
   Widget _buildTabButton(String text, bool isSelected) {
     return GestureDetector(
       onTap: () {
@@ -137,30 +203,77 @@ class _VehicleDetailState extends State<VehicleDetail> {
     );
   }
 
+  // Construcción del contenido dinámico basado en la pestaña seleccionada
   Widget _buildContent() {
     return isMaintenanceSelected
         ? _buildMaintenanceDetails()
         : _buildStatisticsDetails();
   }
 
+  // Detalles de Mantenimientos
   Widget _buildMaintenanceDetails() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Mantenimientos recientes',
+          'Tipo de Mantenimiento',
           style: TextStyle(color: Colors.yellow, fontSize: 18),
         ),
         SizedBox(height: 10),
+        // Caja que muestra íconos de tipo de mantenimiento
+        Container(
+          padding: EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.grey[800],
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _buildMaintenanceIcon(Icons.warning, 'Preventivo'),
+              _buildMaintenanceIcon(Icons.build, 'Correctivo'),
+              _buildMaintenanceIcon(Icons.car_rental, 'Equipamiento'),
+            ],
+          ),
+        ),
+        SizedBox(height: 20),
         Text(
-          'Aquí van los detalles de mantenimientos...',
-          style: TextStyle(color: Colors.white),
+          'Historial de Mantenimiento',
+          style: TextStyle(color: Colors.yellow, fontSize: 18),
+        ),
+        SizedBox(height: 10),
+        // Caja de historial de mantenimiento (por ahora vacía)
+        Container(
+          padding: EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.grey[800],
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Text(
+            'Aquí se mostrará el historial de mantenimiento...',
+            style: TextStyle(color: Colors.white, fontSize: 16),
+          ),
         ),
         SizedBox(height: 10),
       ],
     );
   }
 
+  // Construcción de cada ícono de tipo de mantenimiento
+  Widget _buildMaintenanceIcon(IconData icon, String label) {
+    return Column(
+      children: [
+        Icon(icon, color: Colors.yellow, size: 40),
+        SizedBox(height: 8),
+        Text(
+          label,
+          style: TextStyle(color: Colors.white, fontSize: 16),
+        ),
+      ],
+    );
+  }
+
+  // Detalles de Estadísticas
   Widget _buildStatisticsDetails() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -170,9 +283,32 @@ class _VehicleDetailState extends State<VehicleDetail> {
           style: TextStyle(color: Colors.yellow, fontSize: 18),
         ),
         SizedBox(height: 10),
-        Text(
-          'Aquí van las estadísticas...',
-          style: TextStyle(color: Colors.white),
+        // Caja que muestra contenido dinámico de estadísticas
+        Container(
+          padding: EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.grey[800],
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Kilometraje total: 45,000 km',
+                style: TextStyle(color: Colors.white, fontSize: 16),
+              ),
+              SizedBox(height: 8),
+              Text(
+                'Consumo promedio de combustible: 15 km/l',
+                style: TextStyle(color: Colors.white, fontSize: 16),
+              ),
+              SizedBox(height: 8),
+              Text(
+                'Uso diario promedio: 50 km',
+                style: TextStyle(color: Colors.white, fontSize: 16),
+              ),
+            ],
+          ),
         ),
         SizedBox(height: 10),
       ],
