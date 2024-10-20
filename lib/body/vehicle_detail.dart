@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:minewatch/dialogs/preventive_maintenance_dialog.dart';
-import 'package:minewatch/dialogs/maintenance_history_dialog.dart'; // Importar el diálogo de historial
+
+import 'package:minewatch/dialogs/maintenance_history_dialog.dart';
 
 class VehicleDetail extends StatefulWidget {
   final Map<String, dynamic> vehicle;
@@ -32,39 +33,53 @@ class _VehicleDetailState extends State<VehicleDetail> {
       context: context,
       builder: (BuildContext context) {
         return PreventiveMaintenanceDialog(
+          parentContext: this.context, // Pasamos el contexto del Scaffold
+          vehicleId: widget.vehicle['id'],
+          vehicleData: widget.vehicle,
           mantenimientoPreventivo: mantenimientoPreventivo,
         );
       },
-    );
+    ).then((_) {
+      setState(() {
+        // Actualizar el estado si es necesario
+      });
+    });
   }
 
   // Mostrar un diálogo con el historial de mantenimiento
   void _showMaintenanceHistoryDialog() {
+    final List<dynamic> historialMantenimientoPreventivo =
+        widget.vehicle['historial_mantenimiento_preventivo'] ?? [];
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return MaintenanceHistoryDialog();
+        return MaintenanceHistoryDialog(
+          historialMantenimientoPreventivo: historialMantenimientoPreventivo,
+        );
       },
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Color.fromARGB(255, 36, 36, 36), // Fondo oscuro
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _buildHeader(),
-            SizedBox(height: 50),
-            _buildDetailIcons(),
-            SizedBox(height: 50),
-            _buildTabs(),
-            SizedBox(height: 50),
-            _buildContent(),
-          ],
+    return Scaffold(
+      body: Container(
+        color: Color.fromARGB(255, 36, 36, 36), // Fondo oscuro
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _buildHeader(),
+              SizedBox(height: 50),
+              _buildDetailIcons(),
+              SizedBox(height: 50),
+              _buildTabs(),
+              SizedBox(height: 50),
+              _buildContent(),
+            ],
+          ),
         ),
       ),
     );
@@ -272,7 +287,7 @@ class _VehicleDetailState extends State<VehicleDetail> {
               onTap: _showMaintenanceHistoryDialog,
               child: Column(
                 children: [
-                  Icon(Icons.history, color: Colors.yellow, size: 64),
+                  Icon(Icons.list, color: Colors.yellow, size: 64),
                   SizedBox(height: 8),
                   Text(
                     'Historial de Mantenimiento',
@@ -295,6 +310,7 @@ class _VehicleDetailState extends State<VehicleDetail> {
         if (label == 'Preventivo') {
           _showPreventiveMaintenanceDialog();
         }
+        // Puedes agregar aquí las funciones para 'Correctivo' y 'Equipamiento' si lo deseas.
       },
       child: Column(
         children: [
