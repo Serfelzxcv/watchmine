@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:minewatch/body/perfil.dart';
 import 'package:minewatch/body/notificaciones.dart';
 import 'package:minewatch/body/menu.dart';
+import 'package:minewatch/body/vehicle_detail.dart';
 import 'package:minewatch/components/bottomNavigationBar.dart';
 import 'package:minewatch/menu_body/vehicleSearch.dart';
 import 'package:minewatch/screens/login.dart';
-import 'package:minewatch/body/VehicleDetail.dart'; // Asegúrate de importar VehicleDetail
 
 // Enum para gestionar las diferentes pantallas
 enum ScreenType {
@@ -13,7 +13,7 @@ enum ScreenType {
   Menu,
   Notificaciones,
   Flotas,
-  Detalles, // Nueva pantalla para detalles del vehículo
+  Detalles,
 }
 
 class HomeScreen extends StatefulWidget {

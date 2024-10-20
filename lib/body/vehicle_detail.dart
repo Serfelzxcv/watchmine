@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:minewatch/dialogs/preventive_maintenance_dialog.dart';
+import 'package:minewatch/dialogs/maintenance_history_dialog.dart'; // Importar el diálogo de historial
 
 class VehicleDetail extends StatefulWidget {
   final Map<String, dynamic> vehicle;
@@ -15,11 +17,35 @@ class _VehicleDetailState extends State<VehicleDetail> {
   @override
   void initState() {
     super.initState();
-    // Imprimir todos los datos del vehículo para verificar
     print('Datos del Vehículo:');
     widget.vehicle.forEach((key, value) {
       print('$key: $value');
     });
+  }
+
+  // Mostrar un diálogo con los mantenimientos preventivos
+  void _showPreventiveMaintenanceDialog() {
+    final List<dynamic> mantenimientoPreventivo =
+        widget.vehicle['mantenimiento_preventivo'] ?? [];
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return PreventiveMaintenanceDialog(
+          mantenimientoPreventivo: mantenimientoPreventivo,
+        );
+      },
+    );
+  }
+
+  // Mostrar un diálogo con el historial de mantenimiento
+  void _showMaintenanceHistoryDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return MaintenanceHistoryDialog();
+      },
+    );
   }
 
   @override
@@ -52,10 +78,6 @@ class _VehicleDetailState extends State<VehicleDetail> {
         widget.vehicle['anio_fabricacion']?.toString() ?? 'Año desconocido';
     final numeroMotor =
         widget.vehicle['numero_motor'] ?? 'Número de motor desconocido';
-
-    // Imprimir datos específicos del encabezado
-    print(
-        'Encabezado: placa=$placa, marca=$marca, anio_fabricacion=$anio, numero_motor=$numeroMotor');
 
     return Container(
       padding: const EdgeInsets.all(16.0),
@@ -132,10 +154,6 @@ class _VehicleDetailState extends State<VehicleDetail> {
     final tipoCombustible = widget.vehicle['tipo_combustible'] ?? 'Desconocido';
     final categoria = widget.vehicle['categoria_vehiculo'] ?? 'Desconocido';
     final colorVehiculo = widget.vehicle['color_vehiculo'] ?? 'Desconocido';
-
-    // Imprimir datos de los íconos de detalle
-    print(
-        'Íconos de Detalle: tipo_combustible=$tipoCombustible, categoria_vehiculo=$categoria, color_vehiculo=$colorVehiculo');
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -242,16 +260,27 @@ class _VehicleDetailState extends State<VehicleDetail> {
           style: TextStyle(color: Colors.yellow, fontSize: 18),
         ),
         SizedBox(height: 10),
-        // Caja de historial de mantenimiento (por ahora vacía)
+        // Caja centrada con icono de historial de mantenimiento
         Container(
           padding: EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: Colors.grey[800],
             borderRadius: BorderRadius.circular(12),
           ),
-          child: Text(
-            'Aquí se mostrará el historial de mantenimiento...',
-            style: TextStyle(color: Colors.white, fontSize: 16),
+          child: Center(
+            child: GestureDetector(
+              onTap: _showMaintenanceHistoryDialog,
+              child: Column(
+                children: [
+                  Icon(Icons.history, color: Colors.yellow, size: 64),
+                  SizedBox(height: 8),
+                  Text(
+                    'Historial de Mantenimiento',
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
         SizedBox(height: 10),
@@ -261,15 +290,22 @@ class _VehicleDetailState extends State<VehicleDetail> {
 
   // Construcción de cada ícono de tipo de mantenimiento
   Widget _buildMaintenanceIcon(IconData icon, String label) {
-    return Column(
-      children: [
-        Icon(icon, color: Colors.yellow, size: 40),
-        SizedBox(height: 8),
-        Text(
-          label,
-          style: TextStyle(color: Colors.white, fontSize: 16),
-        ),
-      ],
+    return GestureDetector(
+      onTap: () {
+        if (label == 'Preventivo') {
+          _showPreventiveMaintenanceDialog();
+        }
+      },
+      child: Column(
+        children: [
+          Icon(icon, color: Colors.yellow, size: 40),
+          SizedBox(height: 8),
+          Text(
+            label,
+            style: TextStyle(color: Colors.white, fontSize: 16),
+          ),
+        ],
+      ),
     );
   }
 
