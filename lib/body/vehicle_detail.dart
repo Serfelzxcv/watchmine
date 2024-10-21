@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:minewatch/dialogs/preventive_maintenance_dialog.dart';
-
 import 'package:minewatch/dialogs/maintenance_history_dialog.dart';
+import 'package:minewatch/dialogs/corrective_maintenance_history_dialog.dart';
+import 'package:minewatch/dialogs/equipment_history_dialog.dart';
+import 'package:minewatch/forms/add_equipment_form.dart';
+import 'package:minewatch/forms/add_corrective_maintenance_form.dart';
 
 class VehicleDetail extends StatefulWidget {
   final Map<String, dynamic> vehicle;
@@ -33,20 +36,18 @@ class _VehicleDetailState extends State<VehicleDetail> {
       context: context,
       builder: (BuildContext context) {
         return PreventiveMaintenanceDialog(
-          parentContext: this.context, // Pasamos el contexto del Scaffold
+          parentContext: this.context,
           vehicleId: widget.vehicle['id'],
           vehicleData: widget.vehicle,
           mantenimientoPreventivo: mantenimientoPreventivo,
         );
       },
     ).then((_) {
-      setState(() {
-        // Actualizar el estado si es necesario
-      });
+      setState(() {});
     });
   }
 
-  // Mostrar un diálogo con el historial de mantenimiento
+  // Mostrar un diálogo con el historial de mantenimiento preventivo
   void _showMaintenanceHistoryDialog() {
     final List<dynamic> historialMantenimientoPreventivo =
         widget.vehicle['historial_mantenimiento_preventivo'] ?? [];
@@ -61,11 +62,89 @@ class _VehicleDetailState extends State<VehicleDetail> {
     );
   }
 
+  // Mostrar un diálogo con el historial de mantenimiento correctivo
+  void _showCorrectiveMaintenanceHistoryDialog() {
+    final List<dynamic> historialCorrectivo =
+        widget.vehicle['mantenimiento_correctivo'] ?? [];
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CorrectiveMaintenanceHistoryDialog(
+          historialCorrectivo: historialCorrectivo,
+        );
+      },
+    );
+  }
+
+  // Mostrar un diálogo con el historial de equipamiento
+  void _showEquipmentHistoryDialog() {
+    final List<dynamic> historialEquipamiento =
+        widget.vehicle['equipamiento'] ?? [];
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return EquipmentHistoryDialog(
+          historialEquipamiento: historialEquipamiento,
+        );
+      },
+    );
+  }
+
+  // Mostrar el formulario de mantenimiento correctivo
+  void _showCorrectiveMaintenanceDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AddCorrectiveMaintenanceForm(
+          parentContext: this.context,
+          vehicleId: widget.vehicle['id'],
+          vehicleData: widget.vehicle,
+          onMaintenanceAdded: _onCorrectiveMaintenanceAdded,
+        );
+      },
+    );
+  }
+
+  // Mostrar el formulario de equipamiento
+  void _showEquipmentDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AddEquipmentForm(
+          parentContext: this.context,
+          vehicleId: widget.vehicle['id'],
+          vehicleData: widget.vehicle,
+          onEquipmentAdded: _onEquipmentAdded,
+        );
+      },
+    );
+  }
+
+  // Método para actualizar la lista de mantenimiento correctivo
+  void _onCorrectiveMaintenanceAdded(Map<String, dynamic> nuevoCorrectivo) {
+    setState(() {
+      widget.vehicle['mantenimiento_correctivo'] =
+          List.from(widget.vehicle['mantenimiento_correctivo'] ?? [])
+            ..add(nuevoCorrectivo);
+    });
+  }
+
+  // Método para actualizar la lista de equipamiento
+  void _onEquipmentAdded(Map<String, dynamic> nuevoEquipamiento) {
+    setState(() {
+      widget.vehicle['equipamiento'] =
+          List.from(widget.vehicle['equipamiento'] ?? [])
+            ..add(nuevoEquipamiento);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        color: Color.fromARGB(255, 36, 36, 36), // Fondo oscuro
+        color: Color.fromARGB(255, 36, 36, 36),
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -85,7 +164,6 @@ class _VehicleDetailState extends State<VehicleDetail> {
     );
   }
 
-  // Construcción del encabezado con fondo blanco
   Widget _buildHeader() {
     final placa = widget.vehicle['placa'] ?? 'Placa desconocida';
     final marca = widget.vehicle['marca'] ?? 'Marca desconocida';
@@ -97,7 +175,7 @@ class _VehicleDetailState extends State<VehicleDetail> {
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: Colors.white, // Fondo blanco para el encabezado
+        color: Colors.white,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
@@ -139,7 +217,6 @@ class _VehicleDetailState extends State<VehicleDetail> {
     );
   }
 
-  // Función para construir el texto con el título en negrita y el valor normal
   Widget _buildRichText(String title, String value) {
     return RichText(
       text: TextSpan(
@@ -164,7 +241,6 @@ class _VehicleDetailState extends State<VehicleDetail> {
     );
   }
 
-  // Construcción de los íconos de detalle
   Widget _buildDetailIcons() {
     final tipoCombustible = widget.vehicle['tipo_combustible'] ?? 'Desconocido';
     final categoria = widget.vehicle['categoria_vehiculo'] ?? 'Desconocido';
@@ -180,7 +256,6 @@ class _VehicleDetailState extends State<VehicleDetail> {
     );
   }
 
-  // Construcción de cada ícono de detalle
   Widget _buildIconInfo(IconData icon, String info, String label) {
     return Column(
       children: [
@@ -199,7 +274,6 @@ class _VehicleDetailState extends State<VehicleDetail> {
     );
   }
 
-  // Construcción de las pestañas de Mantenimientos y Estadísticas
   Widget _buildTabs() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -211,7 +285,6 @@ class _VehicleDetailState extends State<VehicleDetail> {
     );
   }
 
-  // Construcción de cada botón de pestaña
   Widget _buildTabButton(String text, bool isSelected) {
     return GestureDetector(
       onTap: () {
@@ -236,14 +309,12 @@ class _VehicleDetailState extends State<VehicleDetail> {
     );
   }
 
-  // Construcción del contenido dinámico basado en la pestaña seleccionada
   Widget _buildContent() {
     return isMaintenanceSelected
         ? _buildMaintenanceDetails()
         : _buildStatisticsDetails();
   }
 
-  // Detalles de Mantenimientos
   Widget _buildMaintenanceDetails() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -253,7 +324,6 @@ class _VehicleDetailState extends State<VehicleDetail> {
           style: TextStyle(color: Colors.yellow, fontSize: 18),
         ),
         SizedBox(height: 10),
-        // Caja que muestra íconos de tipo de mantenimiento
         Container(
           padding: EdgeInsets.all(16),
           decoration: BoxDecoration(
@@ -275,27 +345,22 @@ class _VehicleDetailState extends State<VehicleDetail> {
           style: TextStyle(color: Colors.yellow, fontSize: 18),
         ),
         SizedBox(height: 10),
-        // Caja centrada con icono de historial de mantenimiento
         Container(
           padding: EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: Colors.grey[800],
             borderRadius: BorderRadius.circular(12),
           ),
-          child: Center(
-            child: GestureDetector(
-              onTap: _showMaintenanceHistoryDialog,
-              child: Column(
-                children: [
-                  Icon(Icons.list, color: Colors.yellow, size: 64),
-                  SizedBox(height: 8),
-                  Text(
-                    'Historial de Mantenimiento',
-                    style: TextStyle(color: Colors.white, fontSize: 16),
-                  ),
-                ],
-              ),
-            ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _buildHistoryIcon(Icons.history, 'Hist. Preventivo',
+                  _showMaintenanceHistoryDialog),
+              _buildHistoryIcon(Icons.list, 'Hist. Correctivo',
+                  _showCorrectiveMaintenanceHistoryDialog),
+              _buildHistoryIcon(Icons.inventory, 'Hist. Equipamiento',
+                  _showEquipmentHistoryDialog),
+            ],
           ),
         ),
         SizedBox(height: 10),
@@ -303,14 +368,16 @@ class _VehicleDetailState extends State<VehicleDetail> {
     );
   }
 
-  // Construcción de cada ícono de tipo de mantenimiento
   Widget _buildMaintenanceIcon(IconData icon, String label) {
     return GestureDetector(
       onTap: () {
         if (label == 'Preventivo') {
           _showPreventiveMaintenanceDialog();
+        } else if (label == 'Correctivo') {
+          _showCorrectiveMaintenanceDialog();
+        } else if (label == 'Equipamiento') {
+          _showEquipmentDialog();
         }
-        // Puedes agregar aquí las funciones para 'Correctivo' y 'Equipamiento' si lo deseas.
       },
       child: Column(
         children: [
@@ -325,7 +392,23 @@ class _VehicleDetailState extends State<VehicleDetail> {
     );
   }
 
-  // Detalles de Estadísticas
+  Widget _buildHistoryIcon(IconData icon, String label, Function onTap) {
+    return GestureDetector(
+      onTap: () => onTap(),
+      child: Column(
+        children: [
+          Icon(icon, color: Colors.yellow, size: 40),
+          SizedBox(height: 8),
+          Text(
+            label,
+            style: TextStyle(color: Colors.white, fontSize: 12),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildStatisticsDetails() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -335,7 +418,6 @@ class _VehicleDetailState extends State<VehicleDetail> {
           style: TextStyle(color: Colors.yellow, fontSize: 18),
         ),
         SizedBox(height: 10),
-        // Caja que muestra contenido dinámico de estadísticas
         Container(
           padding: EdgeInsets.all(16),
           decoration: BoxDecoration(

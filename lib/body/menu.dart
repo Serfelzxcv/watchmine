@@ -37,11 +37,14 @@ class Menu extends StatelessWidget {
                         padding: EdgeInsets.all(10.0),
                         children: [
                           _buildAppIcon(Icons.car_repair, 'Flotas'),
-                          _buildAppIcon(Icons.message, 'Mensajes'),
-                          _buildAppIcon(Icons.camera_alt, 'Cámara'),
-                          _buildAppIcon(Icons.photo, 'Fotos'),
-                          _buildAppIcon(Icons.music_note, 'Música'),
-                          _buildAppIcon(Icons.settings, 'Ajustes'),
+                          _buildAppIcon(Icons.hiking, 'Operaciones'),
+                          _buildAppIcon(Icons.security, 'Seguridad'),
+                          _buildAppIcon(Icons.assessment, 'Reportes'),
+                          _buildAppIcon(Icons.build, 'Mantenimiento'),
+                          _buildAppIcon(Icons.terrain, 'Geología'),
+                          _buildAppIcon(Icons.bolt, 'Energía'),
+                          _buildAppIcon(Icons.local_florist, 'Medio Ambiente'),
+                          _buildAppIcon(Icons.people, 'Personal'),
                         ],
                       ),
                     ),
@@ -74,6 +77,7 @@ class Menu extends StatelessWidget {
           Text(
             label,
             style: TextStyle(fontSize: 14.0),
+            textAlign: TextAlign.center, // Centra el texto
           ),
         ],
       ),

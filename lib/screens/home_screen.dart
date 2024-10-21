@@ -4,8 +4,10 @@ import 'package:minewatch/body/notificaciones.dart';
 import 'package:minewatch/body/menu.dart';
 import 'package:minewatch/body/vehicle_detail.dart';
 import 'package:minewatch/components/bottomNavigationBar.dart';
-import 'package:minewatch/menu_body/vehicleSearch.dart';
+import 'package:minewatch/menu_icons_body/vehicleSearch.dart';
 import 'package:minewatch/screens/login.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 // Enum para gestionar las diferentes pantallas
 enum ScreenType {
@@ -29,12 +31,33 @@ class HomeScreenState extends State<HomeScreen> {
   ScreenType currentScreen = ScreenType.Perfil;
   int currentPageIndex = 0;
   Widget currentBodyWidget = Container(); // Inicialización vacía
+  List<Map<String, dynamic>> vehiculos =
+      []; // Lista para almacenar los vehículos
 
   @override
   void initState() {
     super.initState();
     currentBodyWidget =
         PerfilUsuario(widget.userData); // Inicializar con PerfilUsuario
+    _cargarVehiculos(); // Cargar los vehículos al iniciar
+  }
+
+  // Función para cargar los vehículos desde la API
+  void _cargarVehiculos() async {
+    final String apiUrl = 'http://localhost:3001/vehicles';
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+      if (response.statusCode == 200) {
+        setState(() {
+          vehiculos =
+              List<Map<String, dynamic>>.from(json.decode(response.body));
+        });
+      } else {
+        print('Error al cargar los vehículos: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Ocurrió un error al cargar los vehículos: $e');
+    }
   }
 
   @override
@@ -84,7 +107,9 @@ class HomeScreenState extends State<HomeScreen> {
                 currentBodyWidget = Menu(onItemSelected: onMenuItemSelected);
               } else if (index == 2) {
                 currentScreen = ScreenType.Notificaciones;
-                currentBodyWidget = Notificaciones();
+                currentBodyWidget = Notificaciones(
+                  vehiculos: vehiculos, // Pasar la lista de vehículos
+                );
               }
             });
           },
