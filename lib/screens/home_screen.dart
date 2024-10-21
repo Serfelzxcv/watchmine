@@ -1,22 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:minewatch/body/perfil.dart';
+import 'package:minewatch/body/vehicle_detail.dart';
 import 'package:minewatch/body/notificaciones.dart';
 import 'package:minewatch/body/menu.dart';
-import 'package:minewatch/body/vehicle_detail.dart';
 import 'package:minewatch/components/bottomNavigationBar.dart';
 import 'package:minewatch/menu_icons_body/vehicleSearch.dart';
 import 'package:minewatch/screens/login.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:http/http.dart' as http;
 
-// Enum para gestionar las diferentes pantallas
-enum ScreenType {
-  Perfil,
-  Menu,
-  Notificaciones,
-  Flotas,
-  Detalles,
-}
+enum ScreenType { Perfil, Menu, Notificaciones, Flotas, Detalles }
 
 class HomeScreen extends StatefulWidget {
   final Map<String, dynamic> userData;
@@ -24,25 +17,22 @@ class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key, required this.userData}) : super(key: key);
 
   @override
-  State<HomeScreen> createState() => HomeScreenState(); // Clase State pública
+  State<HomeScreen> createState() => HomeScreenState();
 }
 
 class HomeScreenState extends State<HomeScreen> {
   ScreenType currentScreen = ScreenType.Perfil;
   int currentPageIndex = 0;
-  Widget currentBodyWidget = Container(); // Inicialización vacía
-  List<Map<String, dynamic>> vehiculos =
-      []; // Lista para almacenar los vehículos
+  Widget currentBodyWidget = Container();
+  List<Map<String, dynamic>> vehiculos = [];
 
   @override
   void initState() {
     super.initState();
-    currentBodyWidget =
-        PerfilUsuario(widget.userData); // Inicializar con PerfilUsuario
-    _cargarVehiculos(); // Cargar los vehículos al iniciar
+    currentBodyWidget = PerfilUsuario(widget.userData);
+    _cargarVehiculos();
   }
 
-  // Función para cargar los vehículos desde la API
   void _cargarVehiculos() async {
     final String apiUrl = 'http://10.0.2.2:3001/vehicles';
     try {
@@ -108,7 +98,8 @@ class HomeScreenState extends State<HomeScreen> {
               } else if (index == 2) {
                 currentScreen = ScreenType.Notificaciones;
                 currentBodyWidget = Notificaciones(
-                  vehiculos: vehiculos, // Pasar la lista de vehículos
+                  vehiculos: vehiculos,
+                  onVehicleSelected: onVehicleSelected,
                 );
               }
             });
@@ -119,7 +110,6 @@ class HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Manejar selección de ítems en el menú
   void onMenuItemSelected(String item) {
     setState(() {
       if (item == 'Flotas') {
@@ -129,7 +119,6 @@ class HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  // Callback para manejar la selección de un vehículo
   void onVehicleSelected(Map<String, dynamic> vehicle) {
     setState(() {
       currentScreen = ScreenType.Detalles;

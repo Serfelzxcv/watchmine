@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:minewatch/body/vehicle_detail.dart';
 
 class Notificaciones extends StatefulWidget {
-  const Notificaciones(
-      {Key? key, required List<Map<String, dynamic>> vehiculos})
-      : super(key: key);
+  final List<Map<String, dynamic>> vehiculos;
+  final Function(Map<String, dynamic>) onVehicleSelected;
+
+  const Notificaciones({
+    Key? key,
+    required this.vehiculos,
+    required this.onVehicleSelected,
+  }) : super(key: key);
 
   @override
   _NotificacionesState createState() => _NotificacionesState();
@@ -73,15 +77,7 @@ class _NotificacionesState extends State<Notificaciones> {
                           style: TextStyle(color: Colors.black),
                         ),
                         onTap: () {
-                          // Navegar a la pantalla de detalles del vehículo usando la información
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => VehicleDetail(
-                                vehicle: notificacion['vehiculo'],
-                              ),
-                            ),
-                          );
+                          widget.onVehicleSelected(notificacion['vehiculo']);
                         },
                       ),
                     );
@@ -111,7 +107,7 @@ class _NotificacionesState extends State<Notificaciones> {
           fechaUltimoMantenimiento =
               DateTime.parse(mantenimiento['fecha_ultimo_mantenimiento']);
         } catch (e) {
-          continue; // Si no se puede parsear la fecha, continuar con el siguiente.
+          continue;
         }
 
         int intervaloDias = mantenimiento['intervalo_dias'] ?? 0;
@@ -120,22 +116,19 @@ class _NotificacionesState extends State<Notificaciones> {
 
         int diasRestantes = fechaProximoMantenimiento.difference(hoy).inDays;
 
-        // Verificar si el mantenimiento está vencido o próximo a vencerse (10 días o menos).
         if (diasRestantes < 0) {
           notificaciones.add({
             'mensaje':
                 'El mantenimiento preventivo de $placa para "${mantenimiento['nombre']}" está vencido desde hace ${diasRestantes.abs()} días.',
             'color': 'red',
-            'vehiculo':
-                vehiculo, // Incluye el vehículo completo para navegación
+            'vehiculo': vehiculo,
           });
         } else if (diasRestantes <= 10) {
           notificaciones.add({
             'mensaje':
                 'El mantenimiento preventivo de $placa para "${mantenimiento['nombre']}" vence en $diasRestantes días.',
             'color': 'yellow',
-            'vehiculo':
-                vehiculo, // Incluye el vehículo completo para navegación
+            'vehiculo': vehiculo,
           });
         }
       }
