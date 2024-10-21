@@ -44,7 +44,7 @@ class HomeScreenState extends State<HomeScreen> {
 
   // Función para cargar los vehículos desde la API
   void _cargarVehiculos() async {
-    final String apiUrl = 'http://localhost:3001/vehicles';
+    final String apiUrl = 'http://10.0.2.2:3001/vehicles';
     try {
       final response = await http.get(Uri.parse(apiUrl));
       if (response.statusCode == 200) {

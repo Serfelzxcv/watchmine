@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:minewatch/body/vehicle_detail.dart';
 
 class Notificaciones extends StatefulWidget {
   const Notificaciones(
@@ -72,8 +73,15 @@ class _NotificacionesState extends State<Notificaciones> {
                           style: TextStyle(color: Colors.black),
                         ),
                         onTap: () {
-                          // Aquí puedes agregar la lógica para ir al detalle del vehículo
-                          // por ejemplo usando Navigator.push(...)
+                          // Navegar a la pantalla de detalles del vehículo usando la información
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => VehicleDetail(
+                                vehicle: notificacion['vehiculo'],
+                              ),
+                            ),
+                          );
                         },
                       ),
                     );
@@ -118,14 +126,16 @@ class _NotificacionesState extends State<Notificaciones> {
             'mensaje':
                 'El mantenimiento preventivo de $placa para "${mantenimiento['nombre']}" está vencido desde hace ${diasRestantes.abs()} días.',
             'color': 'red',
-            'vehiculo': vehiculo,
+            'vehiculo':
+                vehiculo, // Incluye el vehículo completo para navegación
           });
         } else if (diasRestantes <= 10) {
           notificaciones.add({
             'mensaje':
                 'El mantenimiento preventivo de $placa para "${mantenimiento['nombre']}" vence en $diasRestantes días.',
             'color': 'yellow',
-            'vehiculo': vehiculo,
+            'vehiculo':
+                vehiculo, // Incluye el vehículo completo para navegación
           });
         }
       }
