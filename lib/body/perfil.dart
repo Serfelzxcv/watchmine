@@ -3,136 +3,101 @@ import 'package:flutter/material.dart';
 class PerfilUsuario extends StatelessWidget {
   final Map<String, dynamic> userData;
 
-  PerfilUsuario(this.userData); // Recibimos los datos del usuario
+  PerfilUsuario(this.userData);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 36, 36, 36), // Un gris oscuro
+      backgroundColor: Color(0xFF242424), // Un gris oscuro
+
       body: SingleChildScrollView(
         child: Center(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(height: 60),
-              // Widget para la imagen de perfil redondeada desde una URL
+              SizedBox(height: 40),
+              // Imagen de perfil con borde y sombra
               CircleAvatar(
-                radius: 60,
-                backgroundImage: NetworkImage(userData[
-                    'imagenPerfil']), // Cargamos la imagen desde la URL
-                onBackgroundImageError: (error, stackTrace) {
-                  print('Error cargando imagen: $error');
-                },
-              ),
-              SizedBox(height: 50),
-              // Nombre del usuario
-              Text(
-                'Nombre del Usuario',
-                style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
-              ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 40), // Reducir ancho
-                child: TextField(
-                  readOnly: true,
-                  textAlign:
-                      TextAlign.center, // Centra el texto dentro del TextField
-                  decoration: InputDecoration(
-                    hintText: userData['nombre'], // Nombre del usuario
-                    border: InputBorder.none, // Elimina el borde
-                  ),
-                  style: TextStyle(color: Colors.white, fontSize: 18),
+                radius: 70,
+                backgroundColor: Colors.white,
+                child: CircleAvatar(
+                  radius: 65,
+                  backgroundImage: NetworkImage(userData['imagenPerfil']),
+                  onBackgroundImageError: (error, stackTrace) {
+                    print('Error cargando imagen: $error');
+                  },
                 ),
               ),
-              SizedBox(height: 30),
-              // Número Identificador
-              Text(
-                'Número Identificador',
-                style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
+              SizedBox(height: 20),
+              // Información del usuario con tarjetas
+              _buildInfoCard(
+                icon: Icons.person,
+                title: 'Nombre',
+                value: userData['nombre'] ?? 'No disponible',
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 40),
-                child: TextField(
-                  readOnly: true,
-                  textAlign: TextAlign.center,
-                  decoration: InputDecoration(
-                    hintText: userData['identificador'], // Identificador
-                    border: InputBorder.none, // Elimina el borde
-                  ),
-                  style: TextStyle(color: Colors.white, fontSize: 18),
-                ),
+              _buildInfoCard(
+                icon: Icons.badge,
+                title: 'Número Identificador',
+                value: userData['identificador'] ?? 'No disponible',
               ),
-              SizedBox(height: 30),
-              // Cargo
-              Text(
-                'Cargo',
-                style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
+              _buildInfoCard(
+                icon: Icons.work_outline,
+                title: 'Cargo',
+                value: userData['cargo'] ?? 'No disponible',
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 40),
-                child: TextField(
-                  readOnly: true,
-                  textAlign: TextAlign.center,
-                  decoration: InputDecoration(
-                    hintText: userData['cargo'], // Cargo del usuario
-                    border: InputBorder.none, // Elimina el borde
-                  ),
-                  style: TextStyle(color: Colors.white, fontSize: 18),
-                ),
+              _buildInfoCard(
+                icon: Icons.business_center,
+                title: 'Área',
+                value: userData['area'] ?? 'No disponible',
               ),
-              SizedBox(height: 30),
-              // Área
-              Text(
-                'Área',
-                style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
+              _buildInfoCard(
+                icon: Icons.security,
+                title: 'Rol',
+                value: userData['role'] ?? 'No disponible',
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 40),
-                child: TextField(
-                  readOnly: true,
-                  textAlign: TextAlign.center,
-                  decoration: InputDecoration(
-                    hintText: userData['area'], // Área del usuario
-                    border: InputBorder.none, // Elimina el borde
-                  ),
-                  style: TextStyle(color: Colors.white, fontSize: 18),
-                ),
-              ),
-              SizedBox(height: 30),
-              // Rol del usuario (admin o user)
-              Text(
-                'Rol',
-                style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 40),
-                child: TextField(
-                  readOnly: true,
-                  textAlign: TextAlign.center,
-                  decoration: InputDecoration(
-                    hintText: userData['role'], // Rol del usuario
-                    border: InputBorder.none, // Elimina el borde
-                  ),
-                  style: TextStyle(color: Colors.white, fontSize: 18),
-                ),
-              ),
-              SizedBox(height: 30),
+              SizedBox(height: 20),
+              // Botón de editar (puede ser usado en un futuro)
+              SizedBox(height: 40),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Método para construir una tarjeta de información
+  Widget _buildInfoCard({
+    required IconData icon,
+    required String title,
+    required String value,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      child: Card(
+        color: Color(0xFF333333),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        elevation: 5,
+        child: ListTile(
+          leading: Icon(
+            icon,
+            color: Colors.yellow,
+          ),
+          title: Text(
+            title,
+            style: TextStyle(
+              color: Colors.white70,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          subtitle: Text(
+            value,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+            ),
           ),
         ),
       ),
